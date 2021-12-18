@@ -1,18 +1,17 @@
 package com.example.seleniumtodomvctest;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.Duration;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -56,7 +55,7 @@ public class Tests {
             "AngularJS",
             "React",
             "Dart"})
-    public void todoParameterizedTestCase(String platform) throws InterruptedException {
+    public void todoParameterizedTestCase(String platform) throws InterruptedException, IOException {
         driver.get("https://todomvc.com");
         Thread.sleep(1500);
         choosePlatform(platform);
@@ -72,6 +71,7 @@ public class Tests {
         Thread.sleep(1500);
         assertLeft(2);
         System.out.println("Result verification: success");
+        screenshot(platform);
 
     }
 
@@ -94,6 +94,10 @@ public class Tests {
         WebElement todosCount = driver.findElement(By.xpath("//footer/*/span/strong | //footer/span/strong "));
         System.out.println(todosCount);
         ExpectedConditions.textToBePresentInElement(todosCount, Integer.toString(exp));
+    }
+    public void screenshot(String platform) throws IOException {
+        File screenshotFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+        FileUtils.copyFile(screenshotFile, new File("./src/main/resources/Screenshots/"+platform+".png"));
     }
 
     @AfterEach
